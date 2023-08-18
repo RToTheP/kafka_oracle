@@ -12,6 +12,8 @@ pytest = "^7.4.0"
 oracledb = "^1.4.0"
 python-dotenv = "^1.0.0"
 kafka-python = "^2.0.2"
+fastkafka = {extras = ["docs", "test"], version = "^0.8.0"}
+pytest-asyncio = "^0.21.1"
 
 
 [build-system]

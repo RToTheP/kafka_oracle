@@ -7,7 +7,7 @@ stop_colima:
 	./stop_colima.sh
 
 up:
-	docker-compose -f docker/docker-compose.yaml -f docker/docker-compose.ui.yaml up
+	docker-compose -f docker/docker-compose.yaml -f docker/docker-compose.ui.yaml up -d
 
 down:
 	docker-compose -f docker/docker-compose.yaml -f docker/docker-compose.ui.yaml down --remove-orphans
