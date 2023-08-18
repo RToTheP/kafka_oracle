@@ -1,0 +1,19 @@
+services:
+  code:
+      image: ko-code
+      hostname: code
+      container_name: code
+      depends_on:
+        kafka:
+          condition: service_healthy
+        oracle-test-db:
+          condition: service_healthy
+      build:
+        context: ${PWD}/.
+        dockerfile: ${PWD}/docker/Dockerfile
+      env_file:
+        - ${PWD}/.env
+        - docker.env
+      command: pytest
+
+  

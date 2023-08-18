@@ -7,16 +7,19 @@ stop_colima:
 	./stop_colima.sh
 
 up:
-	docker-compose -f docker/docker-compose.yaml up
+	docker-compose -f docker/docker-compose.yaml -f docker/docker-compose.ui.yaml up
 
 down:
-	docker-compose -f docker/docker-compose.yaml down --remove-orphans
+	docker-compose -f docker/docker-compose.yaml -f docker/docker-compose.ui.yaml down --remove-orphans
 
 build:
-	docker-compose -f docker/docker-compose.yaml build
+	docker-compose -f docker/docker-compose.test.yaml build
 
 logs:
-	docker-compose -f docker/docker-compose.yaml logs
+	docker-compose -f docker/docker-compose.yaml -f docker/docker-compose.ui.yaml logs
 
-run_integration_tests:
-	docker-compose -f docker/docker-compose.yaml up --exit-code-from code code
+docker_integration_test:
+	docker-compose -f docker/docker-compose.yaml -f docker/docker-compose.test.yaml up --exit-code-from code code
+
+docker_integration_test_logs:
+	docker-compose -f docker/docker-compose.yaml -f docker/docker-compose.test.yaml logs code

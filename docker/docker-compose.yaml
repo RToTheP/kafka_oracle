@@ -20,8 +20,6 @@ services:
     container_name: kafka
     depends_on:
       - zookeeper
-      # zookeeper:
-      #   condition: service_healthy
     ports:
       - 29092:29092
     environment:
@@ -40,6 +38,8 @@ services:
 
   oracle-test-db:
     image: gvenzl/oracle-xe
+    hostname: oracle
+    container_name: oracle
     ports:
       - 1521:1521
     environment:
@@ -55,21 +55,18 @@ services:
       retries: 20
       start_period: 30s
 
-  code:
-      image: ko-code
-      hostname: code
-      container_name: code
-      depends_on:
-        kafka:
-          condition: service_healthy
-        oracle-test-db:
-          condition: service_healthy
-      build:
-        context: ${PWD}/.
-        dockerfile: ${PWD}/docker/Dockerfile
-      env_file:
-        - ${PWD}/.env
-        - docker.env
-      command: pytest
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    hostname: kafka-ui
+    container_name: kafka-ui
+    ports:
+      - 8080:8080
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      DYNAMIC_CONFIG_ENABLED: 'true'
 
   
