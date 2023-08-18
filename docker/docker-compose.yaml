@@ -1,0 +1,75 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    healthcheck:
+      test: nc -z localhost 2181 || exit -1
+      interval: 20s
+      timeout: 5s
+      retries: 10
+  
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+      # zookeeper:
+      #   condition: service_healthy
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: ["CMD","kafka-topics","--bootstrap-server","localhost:29092","--list"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 30s
+
+  oracle-test-db:
+    image: gvenzl/oracle-xe
+    ports:
+      - 1521:1521
+    environment:
+      - ORACLE_PASSWORD=badger
+    volumes:
+      - ${PWD}/scripts:/tmp/scripts
+      - ${PWD}/scripts/setup_db.sh:/container-entrypoint-initdb.d/1_setup_db.sh
+
+    healthcheck:
+      test: ["CMD", "cat", "/tmp/setup_complete"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+
+  code:
+      image: ko-code
+      hostname: code
+      container_name: code
+      depends_on:
+        kafka:
+          condition: service_healthy
+        oracle-test-db:
+          condition: service_healthy
+      build:
+        context: ${PWD}/.
+        dockerfile: ${PWD}/docker/Dockerfile
+      env_file:
+        - ${PWD}/.env
+        - docker.env
+      command: pytest
+
+  

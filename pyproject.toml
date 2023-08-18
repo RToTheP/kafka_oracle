@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "kafka-oracle"
+version = "0.1.0"
+description = ""
+authors = ["Ross Parkin <ross.parkin@armakuni.com>"]
+readme = "README.md"
+packages = [{include = "kafka_oracle"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pytest = "^7.4.0"
+oracledb = "^1.4.0"
+python-dotenv = "^1.0.0"
+kafka-python = "^2.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
