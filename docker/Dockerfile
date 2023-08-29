@@ -31,7 +31,3 @@ COPY --from=builder $VENV_PATH $VENV_PATH
 
 WORKDIR /app
 COPY . /app
-
-# CMD exec pytest
-
-# CMD ["gunicorn", "--bind", "0.0.0.0:5000", "mlops_api.app:app"] 
