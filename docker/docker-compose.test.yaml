@@ -6,7 +6,7 @@ services:
       depends_on:
         kafka:
           condition: service_healthy
-        oracle-test-db:
+        oracle:
           condition: service_healthy
       build:
         context: ${PWD}/.

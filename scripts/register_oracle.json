@@ -1,0 +1,16 @@
+{
+    "name": "customers-connector",
+    "config": {
+      "connector.class": "io.debezium.connector.oracle.OracleConnector",
+      "tasks.max": "1",
+      "database.hostname": "oracle",
+      "database.port": "1521",
+      "database.user": "c##dbzuser",
+      "database.password": "dbz",
+      "database.dbname": "localhost",
+      "database.pdb.name": "XEPDB1",
+      "topic.prefix": "server1",
+      "database.history.kafka.bootstrap.servers": "kafka:9092",
+      "database.history.kafka.topic": "schema-changes"
+    }
+  }
